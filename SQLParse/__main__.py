@@ -1,4 +1,5 @@
 import argparse
+import os
 
 
 def _define_args():
@@ -16,6 +17,7 @@ def _define_args():
         action="store_true",
     )
     group.add_argument("--md", help="markdown export flag", action="store_true")
+    group.add_argument("--dblm", help="DBLM export flag", action="store_true")
     parser.print_help()
     return parser.parse_args()
 
@@ -25,12 +27,21 @@ def _handle_args(args):
         raise NotImplementedError("restructured Text not supported yet")
     if args.md:
         raise NotImplementedError("Markdown not supported yet")
-    return args
+    if args.dblm:
+        process_id = 3
+    if args.filename:
+        if os.path.isdir(args.filename):
+            raise NotImplementedError("Folder processing not implemented yet")
+        if not args.filename.endswith(".sql"):
+            raise SyntaxError("The file provided does not ends as .sql")
+        if not os.path.exists(args.filename):
+            raise FileNotFoundError("File to process could not be found")
+    return process_id, args
 
 
 def main():
     args = _define_args()
-    definitive_args = _handle_args(args)
+    process_id, definitive_args = _handle_args(args)
     print("processing correctly")
 
 
